@@ -21,10 +21,12 @@ export class LikeService {
     this.campingEntity = campingEntity;
   }
 
-  async like(token: string, campingID: number) {
+  async like(token: string, campingID: string) {
     const { email } = await this.authService.validateAccess(token);
     const user = await this.authEntity.findOneBy({ email });
-    const camping = await this.campingEntity.findOneBy({ campingID });
+    const camping = await this.campingEntity.findOneBy({
+      campingID: parseInt(campingID),
+    });
 
     const existingLike = await this.userCampingEntity.findOne({
       where: { camping, user },
