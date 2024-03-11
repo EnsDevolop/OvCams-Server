@@ -1,4 +1,4 @@
-import { Controller, Headers, Param, Patch } from '@nestjs/common';
+import { Controller, Get, Headers, Param, Patch } from '@nestjs/common';
 import { LikeService } from './like.service';
 
 @Controller('like')
@@ -18,6 +18,16 @@ export class LikeController {
       data,
       statusCode: 201,
       statusMsg: '업로드 성공',
+    });
+  }
+
+  @Get('/')
+  async getAllLike(@Headers('Authorization') token: any) {
+    const data = await this.likeService.getAllLike(token);
+    return Object.assign({
+      data,
+      statusCode: 200,
+      statusMsg: '조회 성공',
     });
   }
 }

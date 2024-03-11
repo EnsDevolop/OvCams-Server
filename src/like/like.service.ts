@@ -13,15 +13,51 @@ export class LikeService {
     private userCampingEntity: Repository<UserCampingEntity>,
     @InjectRepository(AuthEntity) private authEntity: Repository<AuthEntity>,
     @InjectRepository(CampingEntity)
-    private campinEntity: Repository<CampingEntity>,
+    private campingEntity: Repository<CampingEntity>,
     private authService: AuthService,
   ) {
     this.userCampingEntity = userCampingEntity;
     this.authService = authService;
-    this.campinEntity = campinEntity;
+    this.campingEntity = campingEntity;
   }
 
-  async like(token, campingID) {
+  async like(token: string, campingID: string) {
+    const { email } = await this.authService.validateAccess(token);
+    const user = await this.authEntity.findOneBy({ email });
+    const camping = await this.campingEntity.findOneBy({
+      campingID: parseInt(campingID),
+    });
 
+    const existingLike = await this.userCampingEntity.findOne({
+      where: { camping, user },
+    });
+
+    if (existingLike) {
+      await this.userCampingEntity.update(existingLike, {
+        is_Valid: !existingLike.is_Valid,
+      });
+    } else {
+      await this.userCampingEntity.save({
+        camping,
+        user,
+      });
+    }
+
+    return existingLike;
   }
-} 
+
+  async getAllLike(token: string) {
+    const { email } = await this.authService.validateAccess(token);
+    const user = await this.authEntity.findOneBy({ email });
+    const existingLikes = await this.userCampingEntity.find({
+      where: { user },
+      relations: ['camping'],
+    });
+
+    return existingLikes.map((like) => {
+      const camping = like.camping;
+      camping.like = true;
+      return camping;
+    });
+  }
+}

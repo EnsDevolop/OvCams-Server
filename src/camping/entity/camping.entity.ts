@@ -35,4 +35,6 @@ export class CampingEntity {
 
   @OneToMany(() => UserCampingEntity, (userCamping) => userCamping.camping)
   userCampings: UserCampingEntity[];
+
+  like: boolean;
 }
