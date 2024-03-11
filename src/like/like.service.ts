@@ -45,4 +45,19 @@ export class LikeService {
 
     return existingLike;
   }
+
+  async getAllLike(token: string) {
+    const { email } = await this.authService.validateAccess(token);
+    const user = await this.authEntity.findOneBy({ email });
+    const existingLikes = await this.userCampingEntity.find({
+      where: { user },
+      relations: ['camping'],
+    });
+
+    return existingLikes.map((like) => {
+      const camping = like.camping;
+      camping.like = true;
+      return camping;
+    });
+  }
 }
