@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CampingModule } from './camping/camping.module';
 import { LikeModule } from './like/like.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { LikeModule } from './like/like.module';
     AuthModule,
     CampingModule,
     LikeModule,
+    ReviewModule,
   ],
   controllers: [],
   providers: [],
