@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { LikeController } from './like.controller';
-import { LikeService } from './like.service';
-import { UserCampingLikesEntity } from './entity/like.entity';
 import { AuthEntity } from 'src/auth/entity/auth.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { CampingEntity } from 'src/camping/entity/camping.entity';
+import { ReviewService } from './review.service';
+import { UserCampingReviewsEntity } from './entity/review.entity';
+import { ReviewController } from './review.controller';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      UserCampingLikesEntity,
+      UserCampingReviewsEntity,
       AuthEntity,
       CampingEntity,
     ]),
@@ -29,7 +29,7 @@ import { CampingEntity } from 'src/camping/entity/camping.entity';
       }),
     }),
   ],
-  providers: [LikeService, AuthService],
-  controllers: [LikeController],
+  providers: [ReviewService, AuthService],
+  controllers: [ReviewController],
 })
-export class LikeModule {}
+export class ReviewModule {}

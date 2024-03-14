@@ -23,10 +23,6 @@ export class AuthService {
   async login(req: { user: LoginDto }) {
     const { email, name, picture } = req.user;
 
-    if (!req.user) {
-      return 'User Not Found';
-    }
-
     const thisUser = await this.authEntity.findOneBy({ email });
     if (!thisUser) {
       await this.authEntity.save({

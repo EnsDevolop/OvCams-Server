@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Headers,
+  Param,
+} from '@nestjs/common';
 import { CampingService } from './camping.service';
 import { CampinDto } from './dto/camping.dto';
 
@@ -8,7 +16,7 @@ export class CampingController {
     this.campingService = campingService;
   }
 
-  @Get('/camping')
+  @Get('')
   async getAll(@Query('page') page = 1): Promise<object> {
     const data = await this.campingService.paginate(page);
 
@@ -19,14 +27,31 @@ export class CampingController {
     });
   }
 
-  @Post('/camping')
-  async postCamping(@Body() camping: CampinDto): Promise<object> {
-    const data = await this.campingService.createCamping(camping);
+  @Post('')
+  async postCamping(
+    @Headers('Authorization') token: any,
+    @Body() camping: CampinDto,
+  ): Promise<object> {
+    const data = await this.campingService.createCamping(token, camping);
 
     return Object.assign({
       data,
       statusCode: 201,
       statusMsg: '업로드 성공',
+    });
+  }
+
+  @Get('/:campingID')
+  async getCampingAbout(
+    @Headers('Authorization') token: any,
+    @Param('campingID') id: string,
+  ): Promise<object> {
+    const data = await this.campingService.getAbout(token, id);
+
+    return Object.assign({
+      data,
+      statusCode: 200,
+      statusMsg: '조회 성공',
     });
   }
 }

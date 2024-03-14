@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 
@@ -15,14 +15,24 @@ export class AuthController {
 
   @Get('/google/redirect')
   @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req) {
+  async googleAuthRedirect(@Req() req, @Res() res) {
     const data = await this.authService.login(req);
 
-    return Object.assign({
-      data,
-      statusCode: 200,
-      statusMsg: '로그인 성공',
+    const expirationDate = new Date(Date.now() + 4 * 60 * 60 * 1000);
+
+    res.cookie(
+      'access_token',
+      data.accessToken,
+      { maxAge: expirationDate },
+      {
+        httpOnly: true,
+      },
+    );
+    res.cookie('refresh_token', data.refreshToken, {
+      httpOnly: true,
     });
+
+    res.redirect('http://localhost:3000/auth');
   }
 
   @Get('/naver')
@@ -32,13 +42,23 @@ export class AuthController {
 
   @Get('/naver/redirect')
   @UseGuards(AuthGuard('naver'))
-  async naverAuthRedirect(@Req() req) {
+  async naverAuthRedirect(@Req() req, @Res() res) {
     const data = await this.authService.login(req);
 
-    return Object.assign({
-      data,
-      statusCode: 200,
-      statusMsg: '로그인 성공',
+    const expirationDate = new Date(Date.now() + 4 * 60 * 60 * 1000);
+
+    res.cookie(
+      'access_token',
+      data.accessToken,
+      { maxAge: expirationDate },
+      {
+        httpOnly: true,
+      },
+    );
+    res.cookie('refresh_token', data.refreshToken, {
+      httpOnly: true,
     });
+
+    res.redirect('http://localhost:3000/auth');
   }
 }

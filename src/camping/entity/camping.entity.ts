@@ -1,4 +1,5 @@
-import { UserCampingEntity } from 'src/like/entity/like.entity';
+import { UserCampingLikesEntity } from 'src/like/entity/like.entity';
+import { UserCampingReviewsEntity } from 'src/review/entity/review.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity()
@@ -33,8 +34,17 @@ export class CampingEntity {
   @Column({ type: 'simple-array' })
   facility: string[];
 
-  @OneToMany(() => UserCampingEntity, (userCamping) => userCamping.camping)
-  userCampings: UserCampingEntity[];
+  @OneToMany(
+    () => UserCampingLikesEntity,
+    (userCampingLike) => userCampingLike.camping,
+  )
+  userCampingLikes: UserCampingLikesEntity[];
+
+  @OneToMany(
+    () => UserCampingReviewsEntity,
+    (userCampingRevies) => userCampingRevies.camping,
+  )
+  reviews: UserCampingReviewsEntity[];
 
   like: boolean;
 }

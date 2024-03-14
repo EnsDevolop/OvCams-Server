@@ -3,7 +3,7 @@ import { AuthEntity } from 'src/auth/entity/auth.entity';
 import { CampingEntity } from 'src/camping/entity/camping.entity';
 
 @Entity()
-export class UserCampingLikesEntity {
+export class UserCampingReviewsEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -13,6 +13,6 @@ export class UserCampingLikesEntity {
   @ManyToOne(() => CampingEntity)
   camping: CampingEntity;
 
-  @Column({ type: 'boolean', default: false })
-  is_Valid: boolean;
+  @Column({ type: 'varchar' })
+  content: string;
 }
