@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { UserCampingEntity } from './entity/like.entity';
+import { UserCampingLikesEntity } from './entity/like.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/auth/auth.service';
@@ -9,14 +9,14 @@ import { CampingEntity } from 'src/camping/entity/camping.entity';
 @Injectable()
 export class LikeService {
   constructor(
-    @InjectRepository(UserCampingEntity)
-    private userCampingEntity: Repository<UserCampingEntity>,
+    @InjectRepository(UserCampingLikesEntity)
+    private userCampingLikesEntity: Repository<UserCampingLikesEntity>,
     @InjectRepository(AuthEntity) private authEntity: Repository<AuthEntity>,
     @InjectRepository(CampingEntity)
     private campingEntity: Repository<CampingEntity>,
     private authService: AuthService,
   ) {
-    this.userCampingEntity = userCampingEntity;
+    this.userCampingLikesEntity = userCampingLikesEntity;
     this.authService = authService;
     this.campingEntity = campingEntity;
   }
@@ -28,16 +28,16 @@ export class LikeService {
       campingID: parseInt(campingID),
     });
 
-    const existingLike = await this.userCampingEntity.findOne({
+    const existingLike = await this.userCampingLikesEntity.findOne({
       where: { camping, user },
     });
 
     if (existingLike) {
-      await this.userCampingEntity.update(existingLike, {
+      await this.userCampingLikesEntity.update(existingLike, {
         is_Valid: !existingLike.is_Valid,
       });
     } else {
-      await this.userCampingEntity.save({
+      await this.userCampingLikesEntity.save({
         camping,
         user,
       });
@@ -49,7 +49,7 @@ export class LikeService {
   async getAllLike(token: string) {
     const { email } = await this.authService.validateAccess(token);
     const user = await this.authEntity.findOneBy({ email });
-    const existingLikes = await this.userCampingEntity.find({
+    const existingLikes = await this.userCampingLikesEntity.find({
       where: { user },
       relations: ['camping'],
     });

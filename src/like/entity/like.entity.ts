@@ -3,7 +3,7 @@ import { AuthEntity } from 'src/auth/entity/auth.entity';
 import { CampingEntity } from 'src/camping/entity/camping.entity';
 
 @Entity()
-export class UserCampingEntity {
+export class UserCampingLikesEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
