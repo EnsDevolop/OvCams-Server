@@ -1,4 +1,5 @@
-import { UserCampingEntity } from 'src/like/entity/like.entity';
+import { UserCampingLikesEntity } from 'src/like/entity/like.entity';
+import { UserCampingReviewsEntity } from 'src/review/entity/review.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity()
@@ -15,6 +16,15 @@ export class AuthEntity {
   @Column({ type: 'varchar' })
   picture: string;
 
-  @OneToMany(() => UserCampingEntity, (userCamping) => userCamping.user)
-  userCampings: UserCampingEntity[];
+  @OneToMany(
+    () => UserCampingLikesEntity,
+    (userCampingLike) => userCampingLike.user,
+  )
+  userCampingLikse: UserCampingLikesEntity[];
+
+  @OneToMany(
+    () => UserCampingReviewsEntity,
+    (userCampingReview) => userCampingReview.user,
+  )
+  userCampingReveiws: UserCampingReviewsEntity[];
 }
