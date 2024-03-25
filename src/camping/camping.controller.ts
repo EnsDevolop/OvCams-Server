@@ -8,7 +8,8 @@ import {
   Param,
 } from '@nestjs/common';
 import { CampingService } from './camping.service';
-import { CampinDto } from './dto/camping.dto';
+import { CampingDto } from './dto/camping.dto';
+import { take } from 'rxjs';
 
 @Controller('camping')
 export class CampingController {
@@ -17,8 +18,13 @@ export class CampingController {
   }
 
   @Get('')
-  async getAll(@Query('page') page = 1): Promise<object> {
-    const data = await this.campingService.paginate(page);
+  async getAll(
+    @Query('p') p,
+    @Query('country') country = 'KOREA',
+    @Query('page') page = 1,
+    @Query('take') take = 9,
+  ): Promise<object> {
+    const data = await this.campingService.paginate(p, country, page, take);
 
     return Object.assign({
       data,
@@ -30,7 +36,7 @@ export class CampingController {
   @Post('')
   async postCamping(
     @Headers('Authorization') token: any,
-    @Body() camping: CampinDto,
+    @Body() camping: CampingDto,
   ): Promise<object> {
     const data = await this.campingService.createCamping(token, camping);
 
