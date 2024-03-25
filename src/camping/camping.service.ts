@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CampingEntity } from './entity/camping.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthEntity } from 'src/auth/entity/auth.entity';
 import { UserCampingLikesEntity } from 'src/like/entity/like.entity';
@@ -56,10 +56,9 @@ export class CampingService {
     }
   }
 
-  async paginate(page = 1): Promise<any> {
-    const take = 1;
-
+  async paginate(p: string, country: string, page = 1, take = 9): Promise<any> {
     const [campings, total] = await this.campingEntity.findAndCount({
+      where: { country, placeName: Like(`%${p}%`) },
       take,
       skip: (page - 1) * take,
     });

@@ -32,7 +32,7 @@ export class AuthController {
       httpOnly: true,
     });
 
-    res.redirect('http://localhost:3000/auth');
+    res.redirect('http://localhost:3000/home');
   }
 
   @Get('/naver')
@@ -59,6 +59,6 @@ export class AuthController {
       httpOnly: true,
     });
 
-    res.redirect('http://localhost:3000/auth');
+    res.redirect('http://localhost:3000/home');
   }
 }

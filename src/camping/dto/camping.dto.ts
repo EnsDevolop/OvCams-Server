@@ -1,6 +1,6 @@
 import { IsArray, IsString } from 'class-validator';
 
-export class CampinDto {
+export class CampingDto {
   @IsString()
   accessToken: string;
 
