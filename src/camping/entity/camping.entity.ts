@@ -5,7 +5,13 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 @Entity()
 export class CampingEntity {
   @PrimaryGeneratedColumn()
-  campingID: number; // campingID 필드에 PrimaryGeneratedColumn 사용
+  campingID: number;
+
+  @Column({ type: 'varchar' })
+  mainImage: string;
+
+  @Column({ type: 'simple-array' })
+  images: string[];
 
   @Column({ type: 'int', default: 0 })
   recommend: number;
