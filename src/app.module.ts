@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CampingModule } from './camping/camping.module';
 import { LikeModule } from './like/like.module';
 import { ReviewModule } from './review/review.module';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ReviewModule } from './review/review.module';
     CampingModule,
     LikeModule,
     ReviewModule,
+    ImageModule,
   ],
   controllers: [],
   providers: [],

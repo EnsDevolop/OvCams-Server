@@ -9,8 +9,8 @@ config();
 export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
   constructor() {
     super({
-      clientID: process.env.NAVERCLIENTID,
-      clientSecret: process.env.NAVERCLIENTSECRET,
+      clientID: process.env.NAVER_CLIENT_ID,
+      clientSecret: process.env.NAVER_CLIENT_SECRET,
       callbackURL: 'http://localhost:8080/auth/naver/redirect',
       scope: ['email', 'profile'],
     });

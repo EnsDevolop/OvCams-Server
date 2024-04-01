@@ -4,8 +4,8 @@ import { ReviewDto } from './dto/review.dto';
 
 @Controller('review')
 export class ReviewController {
-  constructor(private reviewServiece: ReviewService) {
-    this.reviewServiece = reviewServiece;
+  constructor(private reviewService: ReviewService) {
+    this.reviewService = reviewService;
   }
 
   @Post('/:campingID')
@@ -14,7 +14,7 @@ export class ReviewController {
     @Param('campingID') id: string,
     @Body() content: ReviewDto,
   ): Promise<object> {
-    const data = await this.reviewServiece.review(token, id, content.content);
+    const data = await this.reviewService.review(token, id, content.content);
     return Object.assign({
       data,
       statusCode: 201,
