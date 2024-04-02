@@ -29,12 +29,18 @@ export class LikeService {
     });
 
     const existingLike = await this.userCampingLikesEntity.findOne({
-      where: { camping, user },
+      where: {
+        camping: { campingID: parseInt(campingID) },
+        user: { userID: user.userID },
+      },
     });
 
     if (existingLike) {
       await this.userCampingLikesEntity.update(existingLike, {
         is_Valid: !existingLike.is_Valid,
+        is_Count: !existingLike.is_Valid
+          ? existingLike.is_Count + 1
+          : existingLike.is_Count - 1,
       });
     } else {
       await this.userCampingLikesEntity.save({
