@@ -26,32 +26,14 @@ export class CampingService {
   async createCamping(token, camping) {
     const { email } = await this.authService.validateAccess(token);
     if (email) {
-      const {
-        placeName,
-        country,
-        address,
-        number,
-        period,
-        homepage,
-        content,
-        facility,
-      } = camping;
+      const { placeName } = camping;
 
       const thisCamping = await this.campingEntity.findOneBy({
         placeName,
       });
 
       if (thisCamping) {
-        await this.campingEntity.save({
-          placeName,
-          country,
-          address,
-          number,
-          period,
-          homepage,
-          content,
-          facility,
-        });
+        await this.campingEntity.save(camping);
       }
     }
   }
@@ -79,23 +61,31 @@ export class CampingService {
     });
     if (camping) {
       const existingReviews = await this.userCampingReviewsEntity.find({
-        where: { camping },
+        where: { camping: { campingID: parseInt(campingID) } },
         relations: ['user'],
+      });
+      const existingLikeCount = await this.userCampingLikesEntity.findOne({
+        where: {
+          camping: { campingID: parseInt(campingID) },
+        },
       });
       camping.reviews = existingReviews;
       if (token) {
         const { email } = await this.authService.validateAccess(token);
         const user = await this.authEntity.findOneBy({ email });
         const existingLike = await this.userCampingLikesEntity.findOne({
-          where: { camping, user },
+          where: {
+            camping: { campingID: parseInt(campingID) },
+            user: { userID: user.userID },
+          },
         });
 
         camping.like = existingLike.is_Valid;
-
-        return camping;
       } else {
         camping.like = false;
       }
+      camping.like_count = existingLikeCount.is_Count;
+      return camping;
     }
   }
 }

@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { TokenResultDto } from './dto/tokenResult.dto';
 import { LoginDto } from './dto/login.dto';
+import { TokenDto } from './dto/token.dto';
 
 @Injectable()
 export class AuthService {
@@ -43,6 +44,12 @@ export class AuthService {
     };
   }
 
+  async getProfile(token: string) {
+    const { email } = await this.validateAccess(token);
+    const user = await this.authEntity.findOneBy({ email });
+    return user;
+  }
+
   async generateAccessToken(email: string, name: string) {
     const payload = {
       email,
@@ -50,10 +57,10 @@ export class AuthService {
     };
 
     const access = this.jwt.sign(payload, {
-      secret: this.config.get<string>('process.env.JWT_SECRET_ACCESS'),
+      secret: process.env.JWT_SECRET_ACCESS,
     });
 
-    return `Bearer ${access}`;
+    return `${access}`;
   }
 
   async generateRefreshToken(email: string, name: string) {
@@ -63,18 +70,19 @@ export class AuthService {
     };
 
     const refresh = this.jwt.sign(payload, {
-      secret: this.config.get<string>('process.env.JWT_SECRET_REFRESH'),
+      secret: process.env.JWT_SECRET_REFRESH,
       expiresIn: '7d',
     });
 
-    return `Bearer ${refresh}`;
+    return `${refresh}`;
   }
 
   async validateAccess(tokenDto: string): Promise<TokenResultDto> {
     const accesstoken = tokenDto.split(' ')[1];
 
+    console.log(process.env.JWT_SECRET_ACCESS);
     const access = await this.jwt.verifyAsync(accesstoken, {
-      secret: this.config.get<string>('process.env.JWT_SECRET_ACCESS'),
+      secret: process.env.JWT_SECRET_ACCESS,
     });
 
     if (!access) {

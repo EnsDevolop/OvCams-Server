@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { CampingService } from './camping.service';
 import { CampingDto } from './dto/camping.dto';
-import { take } from 'rxjs';
 
 @Controller('camping')
 export class CampingController {
