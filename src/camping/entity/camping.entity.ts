@@ -48,9 +48,11 @@ export class CampingEntity {
 
   @OneToMany(
     () => UserCampingReviewsEntity,
-    (userCampingRevies) => userCampingRevies.camping,
+    (userCampingReviews) => userCampingReviews.camping,
   )
   reviews: UserCampingReviewsEntity[];
 
   like: boolean;
+
+  like_count: number;
 }

@@ -15,4 +15,7 @@ export class UserCampingLikesEntity {
 
   @Column({ type: 'boolean', default: false })
   is_Valid: boolean;
+
+  @Column({ default: 1 })
+  is_Count: number;
 }

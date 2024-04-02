@@ -11,6 +11,12 @@ export class CampingDto {
   country: string;
 
   @IsString()
+  mainImage: string;
+
+  @IsArray()
+  images: string[];
+
+  @IsString()
   address: string;
 
   @IsString()
