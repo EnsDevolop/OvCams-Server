@@ -8,9 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { TokenResultDto } from './dto/tokenResult.dto';
 import { LoginDto } from './dto/login.dto';
-import { TokenDto } from './dto/token.dto';
 
-@Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(AuthEntity) private authEntity: Repository<AuthEntity>,
@@ -42,6 +40,31 @@ export class AuthService {
       accessToken: access,
       refreshToken: refresh,
     };
+  }
+
+  async putReissue(token: string) {
+    const refreshtoken = token.split(' ')[1];
+    try {
+      const beforeRefresh = await this.jwt.verifyAsync(refreshtoken, {
+        secret: process.env.JWT_SECRET_REFRESH,
+      });
+      const access = await this.generateAccessToken(
+        beforeRefresh.email,
+        beforeRefresh.name,
+      );
+      const refresh = await this.generateRefreshToken(
+        beforeRefresh.email,
+        beforeRefresh.name,
+      );
+      await this.redis.set(`${beforeRefresh.email}AccessToken`, access);
+      await this.redis.set(`${beforeRefresh.email}RefreshToken`, refresh);
+      return {
+        accessToken: access,
+        refreshToken: refresh,
+      };
+    } catch (error) {
+      throw new UnauthorizedException();
+    }
   }
 
   async getProfile(token: string) {
@@ -79,16 +102,13 @@ export class AuthService {
 
   async validateAccess(tokenDto: string): Promise<TokenResultDto> {
     const accesstoken = tokenDto.split(' ')[1];
-
-    console.log(process.env.JWT_SECRET_ACCESS);
-    const access = await this.jwt.verifyAsync(accesstoken, {
-      secret: process.env.JWT_SECRET_ACCESS,
-    });
-
-    if (!access) {
-      throw new UnauthorizedException('adsf');
+    try {
+      const access = await this.jwt.verifyAsync(accesstoken, {
+        secret: process.env.JWT_SECRET_ACCESS,
+      });
+      return access;
+    } catch (error) {
+      throw new UnauthorizedException();
     }
-
-    return access;
   }
 }

@@ -1,9 +1,6 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 
 export class CampingDto {
-  @IsString()
-  accessToken: string;
-
   @IsString()
   placeName: string;
 
@@ -25,8 +22,9 @@ export class CampingDto {
   @IsArray()
   period: string[];
 
+  @IsOptional()
   @IsString()
-  homepage: string;
+  homepage: string | null;
 
   @IsString()
   content: string;

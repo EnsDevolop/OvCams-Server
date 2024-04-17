@@ -13,9 +13,6 @@ export class CampingEntity {
   @Column({ type: 'simple-array' })
   images: string[];
 
-  @Column({ type: 'int', default: 0 })
-  recommend: number;
-
   @Column({ type: 'varchar' })
   placeName: string;
 
@@ -54,5 +51,6 @@ export class CampingEntity {
 
   like: boolean;
 
+  @Column({ default: 0 })
   like_count: number;
 }

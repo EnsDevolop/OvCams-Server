@@ -23,17 +23,28 @@ export class CampingService {
     this.authEntity = authEntity;
   }
 
+  async getTop3() {
+    const data = await this.campingEntity.find({
+      order: {
+        like_count: 'desc',
+      },
+      take: 3,
+    });
+    data.map((e) => (e.like = false));
+
+    return data;
+  }
+
   async createCamping(token, camping) {
     const { email } = await this.authService.validateAccess(token);
     if (email) {
       const { placeName } = camping;
-
-      const thisCamping = await this.campingEntity.findOneBy({
-        placeName,
+      const thisCamping = await this.campingEntity.findOne({
+        where: { placeName },
       });
 
-      if (thisCamping) {
-        await this.campingEntity.save(camping);
+      if (!thisCamping) {
+        return await this.campingEntity.save(camping);
       }
     }
   }
@@ -64,11 +75,6 @@ export class CampingService {
         where: { camping: { campingID: parseInt(campingID) } },
         relations: ['user'],
       });
-      const existingLikeCount = await this.userCampingLikesEntity.findOne({
-        where: {
-          camping: { campingID: parseInt(campingID) },
-        },
-      });
       camping.reviews = existingReviews;
       if (token) {
         const { email } = await this.authService.validateAccess(token);
@@ -79,12 +85,18 @@ export class CampingService {
             user: { userID: user.userID },
           },
         });
-
-        camping.like = existingLike.is_Valid;
+        if (existingLike) {
+          camping.like = existingLike.is_Valid;
+        } else {
+          await this.userCampingLikesEntity.save({
+            camping,
+            user,
+          });
+        }
       } else {
         camping.like = false;
       }
-      camping.like_count = existingLikeCount.is_Count;
+
       return camping;
     }
   }

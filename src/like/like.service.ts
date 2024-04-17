@@ -28,7 +28,7 @@ export class LikeService {
       campingID: parseInt(campingID),
     });
 
-    const existingLike = await this.userCampingLikesEntity.findOne({
+    let existingLike = await this.userCampingLikesEntity.findOne({
       where: {
         camping: { campingID: parseInt(campingID) },
         user: { userID: user.userID },
@@ -38,15 +38,29 @@ export class LikeService {
     if (existingLike) {
       await this.userCampingLikesEntity.update(existingLike, {
         is_Valid: !existingLike.is_Valid,
-        is_Count: !existingLike.is_Valid
-          ? existingLike.is_Count + 1
-          : existingLike.is_Count - 1,
       });
+
+      await this.campingEntity.update(
+        { campingID: parseInt(campingID) },
+        {
+          like_count: existingLike.is_Valid
+            ? camping.like_count - 1
+            : camping.like_count + 1,
+        },
+      );
     } else {
-      await this.userCampingLikesEntity.save({
+      existingLike = await this.userCampingLikesEntity.create({
         camping,
         user,
+        is_Valid: true,
       });
+      await this.userCampingLikesEntity.save(existingLike);
+      await this.campingEntity.update(
+        { campingID: parseInt(campingID) },
+        {
+          like_count: camping.like_count + 1,
+        },
+      );
     }
 
     return existingLike;
