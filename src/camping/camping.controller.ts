@@ -46,6 +46,17 @@ export class CampingController {
     });
   }
 
+  @Get('/best')
+  async getCampingBest() {
+    const data = await this.campingService.getTop3();
+
+    return Object.assign({
+      data,
+      statusCode: 200,
+      statusMsg: '조회 성공',
+    });
+  }
+
   @Get('/:campingID')
   async getCampingAbout(
     @Headers('Authorization') token: any,
