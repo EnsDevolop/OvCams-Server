@@ -13,10 +13,10 @@ import { NaverStrategy } from './strategy/naver.strategy';
     TypeOrmModule.forFeature([AuthEntity]),
     JwtModule.registerAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('SECRETORPRIVATE'),
+      useFactory: () => ({
+        secret: process.env.SECRETORPRIVATE,
         signOptions: {
-          expiresIn: '4h',
+          expiresIn: '14400000',
         },
         verifyOptions: {
           complete: false,
